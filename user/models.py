@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from dao.db import Base
 from dao.fields import PhoneField, CnpjField
+from rest_framework.authtoken.models import Token
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class UserManager(BaseUserManager):
@@ -47,3 +50,9 @@ class Company(Base):
     phone_number = PhoneField(verbose_name='Número de telefone', unique=True)
     max_admin_user = models.IntegerField(default=1)
     max_staff_user = models.IntegerField(default=1)
+
+
+@receiver(post_save, sender=User)
+def create_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
