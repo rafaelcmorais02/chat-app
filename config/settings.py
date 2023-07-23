@@ -35,21 +35,23 @@ ALLOWED_HOSTS = ['localhost']
 # Application definition
 
 INSTALLED_APPS = [
-    'rest_framework',  # add DRF
-    'rest_framework.authtoken',  # add token authentication
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # External apps
     'drf_yasg',  # documentation
-    'user'
+    'rest_framework',  # add DRF
+    'rest_framework.authtoken',  # add token authentication
+    # Internal apps
+    'authentication'
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'user.auth.BearerTokenAuthentication',
+        'authentication.auth.BearerTokenAuthentication',
     ),
 }
 
@@ -132,7 +134,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "user.User"
+AUTH_USER_MODEL = "authentication.User"
 
 # Token variables
 TOKEN_EXPIRED_AFTER_SECONDS = 60
