@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'rest_framework',  # add DRF
     'rest_framework.authtoken',  # add token authentication
     # Internal apps
-    'authentication'
+    'authentication',
+    'registration'
 ]
 
 REST_FRAMEWORK = {

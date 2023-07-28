@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from dao.db import Base
-from dao.fields import PhoneField, CnpjField
 from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -28,28 +27,21 @@ class UserManager(BaseUserManager):
 
 
 class User(PermissionsMixin, AbstractBaseUser, Base):
-    company = models.ForeignKey('Company', on_delete=models.CASCADE, null=True, blank=True)
-    first_name = models.CharField(verbose_name='Primeiro nome', max_length=50)
-    last_name = models.CharField('Sobrenome', max_length=50)
-    phone_number = PhoneField(verbose_name='Número de telefone')
+    full_name = models.CharField('Nome completo', max_length=100, blank=True, null=True)
     email = models.EmailField(verbose_name='Email', unique=True)
+    password_redefinition = models.BooleanField(verbose_name='Redefinição de senha', default=False)
     is_staff = models.BooleanField(verbose_name='Colaborador da equipe?', default=False)
     is_superuser = models.BooleanField(verbose_name='Super usuário?', default=False)
-    is_company_admin = models.BooleanField(verbose_name='Admin da empresa?', default=False)
-    is_company_staff = models.BooleanField(verbose_name='Colaborador da empresa?', default=False)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['full_name']
 
-
-class Company(Base):
-    name = models.CharField(verbose_name='Nome da empresa', max_length=50)
-    cnpj = CnpjField(verbose_name='CNPJ', unique=True)
-    phone_number = PhoneField(verbose_name='Número de telefone', unique=True)
-    max_admin_user = models.IntegerField(default=1)
-    max_staff_user = models.IntegerField(default=1)
+    class Meta:
+        verbose_name = 'Usuário'
+        verbose_name_plural = 'Usuários'
+        ordering = ['-created_at']
 
 
 @receiver(post_save, sender=User)
