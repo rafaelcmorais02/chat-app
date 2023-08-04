@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 import environ
 
@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-5^4jsy5h#i#1-nxggwhc+!k&v+(65=3j208592^vjlzjb2)i8=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['.vercel.app', 'localhost']
 
 
 # Application definition
@@ -139,3 +139,7 @@ AUTH_USER_MODEL = "authentication.User"
 
 # Token variables
 TOKEN_EXPIRED_AFTER_SECONDS = 60
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+MEDIA_URLS = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
