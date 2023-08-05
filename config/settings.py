@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',  # add token authentication
     # Internal apps
     'authentication',
-    'registration'
+    'registration',
+    'subscription'
 ]
 
 REST_FRAMEWORK = {
