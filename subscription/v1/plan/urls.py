@@ -1,7 +1,7 @@
 
-from .views import PlanListAPIView
+from .views import list_plan_view
 from django.urls import path
 
 urlpatterns = [
-    path('', PlanListAPIView.as_view())
+    path('', list_plan_view)
 ]

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'drf_yasg',  # documentation
     'rest_framework',  # add DRF
     'rest_framework.authtoken',  # add token authentication
+    'corsheaders',
     # Internal apps
     'authentication',
     'registration',
@@ -60,12 +61,15 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'config.urls'
 
