@@ -22,5 +22,5 @@ def create_company_view(request):
     serializer = CompanySerializer(data=data)
     serializer.is_valid(raise_exception=True)
     validated_data = serializer.validated_data
-    company = create_company(**validated_data)
+    company = create_company(request=request, **validated_data)
     return Response(data=CompanySerializer(instance=company).data, status=201)

@@ -16,6 +16,9 @@ class Company(Base):
         verbose_name_plural = 'Empresas'
         ordering = ['-created_at']
 
+    def __str__(self):
+        return self.name
+
 
 class Account(User):
     company = models.ForeignKey('Company', on_delete=models.CASCADE, related_name='accounts', null=True, blank=True)

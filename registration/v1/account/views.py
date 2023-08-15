@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
 from registration.models import Account
-from .service import create_adm_account, update_adm_account
+from .service import create_adm_account, update_account
 from drf_yasg.utils import swagger_auto_schema
 
 
@@ -47,5 +47,5 @@ def update_account_view(request, pk):
     serializer = AdmAccountUpdateSerializer(data=data)
     serializer.is_valid(raise_exception=True)
     validated_data = serializer.validated_data
-    account = update_adm_account(pk, **validated_data)
+    account = update_account(pk=pk, **validated_data)
     return Response(data=AdmAccountCreateSerializer(instance=account).data, status=201)

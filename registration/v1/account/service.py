@@ -12,7 +12,7 @@ def create_adm_account(**validated_data):
     return account
 
 
-def update_adm_account(pk, **validated_data):
+def update_account(pk, **validated_data):
     account = get_object_or_404(Account, pk=pk)
     for k, v in validated_data.items():
         setattr(account, k, v)
