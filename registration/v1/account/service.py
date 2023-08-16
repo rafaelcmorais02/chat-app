@@ -1,5 +1,6 @@
 from registration.models import Account
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import PermissionDenied
 
 
 def create_adm_account(**validated_data):
@@ -31,4 +32,13 @@ def update_account(pk, **validated_data):
     for k, v in validated_data.items():
         setattr(account, k, v)
     account.save()
+    return account
+
+
+def get_account(pk, user):
+    account = get_object_or_404(Account, pk=pk)
+    if account.id != user.id:
+        raise PermissionDenied({
+            'message': 'user is forbidden to perform action'
+        })
     return account
