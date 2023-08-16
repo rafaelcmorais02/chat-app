@@ -1,5 +1,5 @@
 from django.db import models
-from dao.fields import PhoneField, CnpjField
+from dao.fields import PhoneField, CnpjField, CpfField
 from dao.db import Base
 from authentication.models import User
 from subscription.models import Plan
@@ -25,6 +25,7 @@ class Account(User):
     first_name = models.CharField(verbose_name='Primeiro nome', max_length=50)
     last_name = models.CharField(verbose_name='Sobrenome', max_length=50)
     phone_number = PhoneField(verbose_name='Número de telefone')
+    cpf = CpfField(verbose_name='CPF', unique=True)
     is_company_admin = models.BooleanField(verbose_name='Administrador da empresa?', default=False)
     is_company_staff = models.BooleanField(verbose_name='Colaborador da empresa?', default=True)
 
@@ -36,3 +37,6 @@ class Account(User):
     def save(self) -> None:
         self.full_name = f'{self.first_name} {self.last_name}'
         return super().save()
+
+    def __str__(self):
+        return self.full_name

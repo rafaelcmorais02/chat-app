@@ -1,10 +1,18 @@
-from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
 from registration.models import Account
-from .service import create_adm_account, update_account
+from .service import create_adm_account, update_account, create_staff_account
 from drf_yasg.utils import swagger_auto_schema
+from authentication.permissions import IsAdmAccount
+
+
+class AccountSerializer(ModelSerializer):
+    class Meta:
+        model = Account
+        exclude = ('password', )
 
 
 class AdmAccountCreateSerializer(ModelSerializer):
@@ -23,7 +31,7 @@ class AdmAccountCreateSerializer(ModelSerializer):
         return super().validate(attrs)
 
 
-class AdmAccountUpdateSerializer(ModelSerializer):
+class AccountUpdateSerializer(ModelSerializer):
     class Meta:
         model = Account
         fields = ('company',)
@@ -37,15 +45,34 @@ def create_adm_account_view(request):
     serializer.is_valid(raise_exception=True)
     validated_data = serializer.validated_data
     account = create_adm_account(**validated_data)
-    return Response(data=AdmAccountCreateSerializer(instance=account).data, status=201)
+    return Response(data=AccountSerializer(instance=account).data, status=201)
 
 
-@swagger_auto_schema(method='PUT', request_body=AdmAccountUpdateSerializer, operation_description='Update an Account with a Company')
+@swagger_auto_schema(method='POST', request_body=AccountSerializer, operation_description='Create an Staff Account')
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdmAccount])
+def create_staff_account_view(request):
+    data = request.data
+    adm_account = request.user.account
+    if not hasattr(adm_account, 'company'):
+        raise ValidationError('User must register a company before creating an user')
+    serializer = AccountSerializer(data=data)
+    serializer.is_valid(raise_exception=True)
+    validated_data = serializer.validated_data
+    account, password = create_staff_account(company=adm_account.company, **validated_data)
+    response = {
+        'account': AccountSerializer(instance=account).data,
+        'password': password
+    }
+    return Response(data=response, status=201)
+
+
+@swagger_auto_schema(method='PUT', request_body=AccountUpdateSerializer, operation_description='Update an Account with a Company')
 @api_view(['PUT'])
 def update_account_view(request, pk):
     data = request.data
-    serializer = AdmAccountUpdateSerializer(data=data)
+    serializer = AccountUpdateSerializer(data=data)
     serializer.is_valid(raise_exception=True)
     validated_data = serializer.validated_data
     account = update_account(pk=pk, **validated_data)
-    return Response(data=AdmAccountCreateSerializer(instance=account).data, status=201)
+    return Response(data=AccountSerializer(instance=account).data, status=201)

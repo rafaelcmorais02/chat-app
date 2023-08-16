@@ -21,4 +21,15 @@ class CnpjField(CharField):
         kwargs['verbose_name'] = verbose_name
         super().__init__(*args, **kwargs)
         self.validators.append(int_list_validator(sep='', message='CNPJ must contain only digits'))
-        self.validators.append(MinLengthValidator(self.CNPJ_LEN, message=f'Cnpj must have {self.CNPJ_LEN} digits'))
+        self.validators.append(MinLengthValidator(self.CNPJ_LEN, message=f'CNPJ must have {self.CNPJ_LEN} digits'))
+
+
+class CpfField(CharField):
+    CPF_LEN = 11
+
+    def __init__(self, *args, verbose_name=None, **kwargs):
+        kwargs['max_length'] = self.CPF_LEN
+        kwargs['verbose_name'] = verbose_name
+        super().__init__(*args, **kwargs)
+        self.validators.append(int_list_validator(sep='', message='CPF must contain only digits'))
+        self.validators.append(MinLengthValidator(self.CPF_LEN, message=f'CPF must have {self.CPF_LEN} digits'))

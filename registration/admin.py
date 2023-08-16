@@ -9,5 +9,5 @@ class CompanyAdmin(admin.ModelAdmin):
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'last_name', 'is_company_admin', 'is_company_staff')
+    list_display = ('id', 'first_name', 'last_name', 'cpf', 'is_company_admin', 'is_company_staff')
     exclude = ('full_name', 'is_superuser', 'is_staff')
