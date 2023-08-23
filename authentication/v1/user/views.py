@@ -1,24 +1,9 @@
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
-from rest_framework import serializers
+from authentication.v1.user.serializers import PasswordSerializer
 from drf_yasg.utils import swagger_auto_schema
 from .service import get_or_create_token, set_user_password
-
-
-class PasswordSerializer(serializers.Serializer):
-    username = serializers.EmailField()
-    old_password = serializers.CharField()
-    password = serializers.CharField()
-    password_validation = serializers.CharField()
-
-    def validate(self, attrs):
-        if (attrs.get('password') != attrs.get('password_validation')):
-            raise serializers.ValidationError({
-                'message': 'the passwords must match'
-            })
-        attrs.pop('password_validation')
-        return super().validate(attrs)
 
 
 class CustomAuthToken(ObtainAuthToken):
@@ -31,10 +16,10 @@ class CustomAuthToken(ObtainAuthToken):
         if user.password_redefinition:
             return Response(data={
                 'message': 'User must redefine password'
-            }, status=200)
-        token, created = get_or_create_token(user=user)
+            }, status=400)
+        token = get_or_create_token(user=user)
         return Response(data={
-            'token': token.key,
+            'token': token.get('key'),
             'user_id': user.pk,
             'email': user.email
         }, status=200)

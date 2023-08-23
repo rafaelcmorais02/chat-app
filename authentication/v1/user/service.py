@@ -1,11 +1,13 @@
 from rest_framework.authtoken.models import Token
+from authentication.v1.user.serializers import TokenSerializer
 from rest_framework.serializers import ValidationError
 from django.shortcuts import get_object_or_404
 from ...models import User
 
 
 def get_or_create_token(user):
-    return Token.objects.get_or_create(user=user)
+    token, created = Token.objects.get_or_create(user=user)
+    return TokenSerializer(instance=token).data
 
 
 def set_user_password(**validated_data):

@@ -1,6 +1,7 @@
 from registration.models import Account
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
+from registration.v1.account.serializers import AccountSerializer
 
 
 def create_adm_account(**validated_data):
@@ -10,21 +11,22 @@ def create_adm_account(**validated_data):
     account.is_company_admin = True
     account.is_company_staff = False
     account.save()
-    return account
+    return AccountSerializer(instance=account).data
 
 
-def create_staff_account(company, **validated_data):
-    company_cnpj = company.cnpj
-    cpf = validated_data.get('cpf')
+def create_password_account_staff(account_cpf, company_cnpj):
+    return f'{account_cpf[0:3]}{company_cnpj[0:3]}'
+
+
+def create_staff_account(company, password, **validated_data):
     account = Account(**validated_data)
     account.is_company_admin = False
     account.is_company_staff = True
     account.password_redefinition = True
     account.company = company
-    password = f'{cpf[0:3]}{company_cnpj[0:3]}'
     account.set_password(password)
     account.save()
-    return account, password
+    return AccountSerializer(instance=account).data
 
 
 def update_account(pk, **validated_data):
@@ -32,7 +34,7 @@ def update_account(pk, **validated_data):
     for k, v in validated_data.items():
         setattr(account, k, v)
     account.save()
-    return account
+    return AccountSerializer(instance=account).data
 
 
 def get_account(pk, user):
@@ -41,4 +43,4 @@ def get_account(pk, user):
         raise PermissionDenied({
             'message': 'user is forbidden to perform action'
         })
-    return account
+    return AccountSerializer(instance=account).data
