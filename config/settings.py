@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     # Internal apps
     'authentication',
     'registration',
-    'subscription'
+    'subscription',
+    'lead'
 ]
 
 REST_FRAMEWORK = {

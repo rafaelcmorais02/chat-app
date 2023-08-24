@@ -1,4 +1,4 @@
-from .account.service import update_account
+from registration.v1.account.service import update_account
 
 
 def update_account_with_company(pk, company):
