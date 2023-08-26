@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'authentication',
     'registration',
     'subscription',
-    'lead'
+    'lead',
+    'communication'
 ]
 
 REST_FRAMEWORK = {
