@@ -1,15 +1,15 @@
-from rest_framework.serializers import ModelSerializer
+from dao.serializers import ReadOnlyModelSerializer
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
 
-class TokenSerializer(ModelSerializer):
+class TokenResponseSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = Token
         fields = ('key',)
 
 
-class PasswordSerializer(serializers.Serializer):
+class PasswordRedefinitionRequestSerializer(serializers.Serializer):
     username = serializers.EmailField()
     old_password = serializers.CharField()
     password = serializers.CharField()
@@ -22,3 +22,7 @@ class PasswordSerializer(serializers.Serializer):
             })
         attrs.pop('password_validation')
         return super().validate(attrs)
+
+
+class PasswordRedefinitionResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()

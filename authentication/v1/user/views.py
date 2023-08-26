@@ -1,12 +1,13 @@
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
-from authentication.v1.user.serializers import PasswordSerializer
+from authentication.v1.user.serializers import PasswordRedefinitionRequestSerializer, PasswordRedefinitionResponseSerializer
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from .service import get_or_create_token, set_user_password
 
 
-class CustomAuthToken(ObtainAuthToken):
+class CustomAuthTokenView(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
@@ -25,14 +26,15 @@ class CustomAuthToken(ObtainAuthToken):
         }, status=200)
 
 
-@swagger_auto_schema(method='POST', request_body=PasswordSerializer, operation_description='Redefine a user password')
+openapi_password_redefinition_response = openapi.Response('', PasswordRedefinitionResponseSerializer)
+
+
+@swagger_auto_schema(method='POST', request_body=PasswordRedefinitionRequestSerializer, operation_description='Redefine a user password', responses={201: openapi_password_redefinition_response})
 @api_view(['POST'])
 def password_redefinition_view(request):
     data = request.data
-    serializer = PasswordSerializer(data=data)
+    serializer = PasswordRedefinitionRequestSerializer(data=data)
     serializer.is_valid(raise_exception=True)
     validated_data = serializer.validated_data
-    set_user_password(**validated_data)
-    return Response(data={
-        'message': 'password was redefined'
-    }, status=201)
+    response = set_user_password(**validated_data)
+    return Response(data=response, status=201)

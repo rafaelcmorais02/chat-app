@@ -1,15 +1,30 @@
 from registration.models import Account
+from dao.serializers import ReadOnlyModelSerializer
 from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework import serializers
 
 
-class AccountSerializer(ModelSerializer):
+class AccountResponseSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = Account
-        exclude = ('password', )
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'cpf', 'company')
 
 
-class AdmAccountCreateSerializer(ModelSerializer):
+class StaffAccountResponseSerializer(ReadOnlyModelSerializer):
+    temporary_password = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Account
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'cpf', 'company', 'temporary_password')
+
+
+class CreateStaffAccountRequestSerializer(ModelSerializer):
+    class Meta:
+        model = Account
+        exclude = ('password',)
+
+
+class CreateAdmAccountRequestSerializer(ModelSerializer):
     password_validation = serializers.CharField(write_only=True)
 
     class Meta:
@@ -25,7 +40,7 @@ class AdmAccountCreateSerializer(ModelSerializer):
         return super().validate(attrs)
 
 
-class AccountUpdateSerializer(ModelSerializer):
+class UpdateAccountRequestSerializer(ModelSerializer):
     class Meta:
         model = Account
         fields = ('company',)

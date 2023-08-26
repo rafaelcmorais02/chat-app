@@ -1,8 +1,8 @@
-from rest_framework.serializers import ModelSerializer
+from dao.serializers import ReadOnlyModelSerializer
 from lead.models import LeadStatus
 
 
-class LeadStatusSerializer(ModelSerializer):
+class LeadStatusResponseSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = LeadStatus
-        fields = ('id', 'value')
+        fields = ('id', 'value', 'created_at')

@@ -1,8 +1,8 @@
-from rest_framework.serializers import ModelSerializer
+from dao.serializers import ReadOnlyModelSerializer
 from subscription.models import Plan
 
 
-class PlanSerializer(ModelSerializer):
+class PlanResponseSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = Plan
         fields = '__all__'
