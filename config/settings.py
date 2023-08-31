@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-5^4jsy5h#i#1-nxggwhc+!k&v+(65=3j208592^vjlzjb2)i8=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app', 'localhost']
+ALLOWED_HOSTS = ['.vercel.app', 'localhost', '7c5ecf93d8d7-17342775248863999345.ngrok-free.app']
 
 
 # Application definition
@@ -82,6 +82,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
 
 ROOT_URLCONF = 'config.urls'
 
@@ -156,6 +157,11 @@ AUTH_USER_MODEL = "authentication.User"
 
 # Token variables
 TOKEN_EXPIRED_AFTER_SECONDS = 3600
+
+# Google variables
+GOOGLE_CLIENT_ID = env.str('GOOGLE_CLIENT_ID', default='')
+GOOGLE_CLIENT_SECRET = env.str('GOOGLE_CLIENT_SECRET', default='')
+GOOGLE_AUTH_URI = env.str('GOOGLE_AUTH_URI', default='')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 MEDIA_URLS = '/media/'

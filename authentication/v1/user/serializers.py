@@ -1,6 +1,14 @@
 from dao.serializers import ReadOnlyModelSerializer
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from authentication.models import User
+
+
+class UserResponseSerializer(ReadOnlyModelSerializer):
+
+    class Meta:
+        model = User
+        exclude = ('password',)
 
 
 class TokenResponseSerializer(ReadOnlyModelSerializer):
@@ -26,3 +34,7 @@ class PasswordRedefinitionRequestSerializer(serializers.Serializer):
 
 class PasswordRedefinitionResponseSerializer(serializers.Serializer):
     message = serializers.CharField()
+
+
+class GoogleAuthRequestSerializer(serializers.Serializer):
+    credential = serializers.CharField()
