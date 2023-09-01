@@ -156,7 +156,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "authentication.User"
 
 # Token variables
-TOKEN_EXPIRED_AFTER_SECONDS = 3600
+TOKEN_EXPIRED_AFTER_SECONDS = env.int('TOKEN_EXPIRED_AFTER_SECONDS', default='')
 
 # Google variables
 GOOGLE_CLIENT_ID = env.str('GOOGLE_CLIENT_ID', default='')
