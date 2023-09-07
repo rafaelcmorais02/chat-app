@@ -15,7 +15,7 @@ openapi_flow_definition_response = openapi.Response('', FlowDefinitionResponseSe
 @permission_classes([IsAuthenticated])
 def create_definition_view(request):
     data = request.data
-    serializer = CreateFlowDefinitionRequestSerializer(data=data)
+    serializer = CreateFlowDefinitionRequestSerializer(data=data, context=request)
     serializer.is_valid(raise_exception=True)
     validated_data = serializer.validated_data
     validate_definition(validated_data.get('definition'))

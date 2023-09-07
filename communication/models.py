@@ -1,13 +1,22 @@
 from dao.db import Base
 from django.db import models
 from registration.models import Account
+from lead.models import Lead
+
+
+TRIGGERS = (
+    ('new_message', 'nova mensagem'),
+    ('new_lead', 'novo lead'),
+)
+ELEMENTS = (
+    ('message', 'mensagem'),
+    ('answer', 'resposta'),
+    ('choice', 'opções'),
+    ('delay', 'atraso'),
+)
 
 
 class FlowDefinition(Base):
-    TRIGGERS = (
-        ('new_message', 'nova mensagem'),
-        ('new_lead', 'novo lead'),
-    )
     name = models.CharField(verbose_name='Nome', max_length=100, unique=True)
     definition = models.JSONField(verbose_name='Definição')
     owner = models.ForeignKey(Account, verbose_name='Dono da definição', on_delete=models.CASCADE, related_name='flow_definitions')
@@ -20,3 +29,50 @@ class FlowDefinition(Base):
 
     def __str__(self):
         return self.name
+
+
+class FlowExecution(Base):
+    flow_definition = models.ForeignKey(FlowDefinition, verbose_name='Definição do fluxo', on_delete=models.CASCADE, related_name='flow_executions')
+    lead = models.ForeignKey(Lead, verbose_name='Lead', on_delete=models.CASCADE, related_name='flow_executions')
+    owner = models.ForeignKey(Account, verbose_name='Dono da definição', on_delete=models.CASCADE, related_name='flow_executions')
+    started_at = models.DateTimeField(verbose_name='Data do inicio da execução', blank=True, null=True)
+    finished_at = models.DateTimeField(verbose_name='Data do final da execução', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Execução de Fluxo'
+        verbose_name_plural = 'Execuções de Fluxo'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.flow_definition.name
+
+
+class FlowElement(Base):
+    flow_execution = models.ForeignKey(FlowExecution, verbose_name='Execução do fluxo', on_delete=models.CASCADE, related_name='flow_elements')
+    name = models.CharField(verbose_name='Nome', choices=ELEMENTS, max_length=20)
+    index = models.PositiveIntegerField(verbose_name='Posição', default=0)
+    task_started = models.BooleanField(verbose_name='Tarefa inciada?', default=False)
+    task_finished = models.BooleanField(verbose_name='Tarefa finalizada?', default=False)
+    started_at = models.DateTimeField(verbose_name='Data do inicio da execução', blank=True, null=True)
+    finished_at = models.DateTimeField(verbose_name='Data do final da execução', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Elemento'
+        verbose_name_plural = 'Elementos'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.name}'
+
+
+class MessageElement(Base):
+    flow_element = models.ForeignKey(FlowElement, verbose_name='Elemento do fluxo', on_delete=models.CASCADE, related_name='messages_element')
+    content = models.TextField()
+
+    class Meta:
+        verbose_name = 'Elemento Mensagem'
+        verbose_name_plural = 'Elementos Mensagem'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return str(self.id)
