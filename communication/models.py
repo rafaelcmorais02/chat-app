@@ -3,6 +3,7 @@ from django.db import models
 from registration.models import Account
 from lead.models import Lead
 from enum import Enum
+from datetime import datetime
 
 
 class FlowTriggerType(Enum):
@@ -56,6 +57,16 @@ class FlowExecution(Base):
         verbose_name_plural = 'Execuções de Fluxo'
         ordering = ['-created_at']
 
+    @property
+    def start(self):
+        self.started_at = datetime.now()
+        self.save()
+
+    @property
+    def finish(self):
+        self.finished_at = datetime.now()
+        self.save()
+
     def __str__(self):
         return self.flow_definition.name
 
@@ -73,6 +84,18 @@ class FlowElement(Base):
         verbose_name = 'Elemento'
         verbose_name_plural = 'Elementos'
         ordering = ['-created_at']
+
+    @property
+    def start(self):
+        self.started_at = datetime.now()
+        self.task_started = True
+        self.save()
+
+    @property
+    def finish(self):
+        self.finished_at = datetime.now()
+        self.task_finished = True
+        self.save()
 
     def __str__(self):
         return f'{self.name}'

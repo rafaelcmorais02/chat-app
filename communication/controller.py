@@ -1,9 +1,12 @@
 from django.db import transaction
+from message_api.api import Whatsapp
 from communication.models import FlowDefinition, FlowExecution, FlowElement, MessageElement
 from communication.models import FlowTriggerType, FlowElementType
 from lead.models import Lead
 from registration.models import Account
 import json
+
+whatsapp = Whatsapp()
 
 
 class Controller:
@@ -14,8 +17,14 @@ class Controller:
         self.__start_execution(elements=elements, flow_execution=flow_execution)
 
     def __start_execution(self, elements, flow_execution):
-        print(elements)
-        pass
+        flow_execution.start
+        lead = flow_execution.lead
+        for element, sub_element in elements:
+            element.start
+            if element.name == FlowElementType.MENSAGEM.value:
+                whatsapp.send_message(message=sub_element.content, phone_number=lead.phone_number)
+            element.finish
+        flow_execution.finish
 
     @transaction.atomic
     def __create_new_lead_flow(self, lead_data):

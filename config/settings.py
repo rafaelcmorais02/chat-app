@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'registration',
     'subscription',
     'lead',
-    'communication'
+    'communication',
+    'message_api'
 ]
 
 REST_FRAMEWORK = {
@@ -162,6 +163,10 @@ TOKEN_EXPIRED_AFTER_SECONDS = env.int('TOKEN_EXPIRED_AFTER_SECONDS', default='')
 GOOGLE_CLIENT_ID = env.str('GOOGLE_CLIENT_ID', default='')
 GOOGLE_CLIENT_SECRET = env.str('GOOGLE_CLIENT_SECRET', default='')
 GOOGLE_AUTH_URI = env.str('GOOGLE_AUTH_URI', default='')
+
+# Whatsapp variables
+WHATSAPP_TOKEN = env.str('WHATSAPP_TOKEN', default='')
+WHATSAPP_URL = env.str('WHATSAPP_URL', default='')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 MEDIA_URLS = '/media/'
