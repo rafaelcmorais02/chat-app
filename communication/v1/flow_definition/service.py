@@ -2,10 +2,11 @@ import json
 from rest_framework.exceptions import ValidationError
 from communication.models import FlowDefinition
 from communication.v1.flow_definition.serializers import FlowDefinitionResponseSerializer
+from communication.models import FlowElementType
 
 
 def validate_definition(raw_definition):
-    ELEMENT_TYPES = ['message']
+    ELEMENT_TYPES = FlowElementType.as_list()
     definition = json.loads(raw_definition)
     elements = definition.get('definition').get('elements')
     if not isinstance(elements, list):
@@ -17,7 +18,7 @@ def validate_definition(raw_definition):
             raise ValidationError({
                 'message': 'Element Type was not identified'
             })
-        if element.get('type') == 'message':
+        if element.get('type') == FlowElementType.MENSAGEM.value:
             params = element.get('params')
             if not params:
                 raise ValidationError({

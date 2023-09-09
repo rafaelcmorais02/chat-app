@@ -2,25 +2,38 @@ from dao.db import Base
 from django.db import models
 from registration.models import Account
 from lead.models import Lead
+from enum import Enum
 
 
-TRIGGERS = (
-    ('new_message', 'nova mensagem'),
-    ('new_lead', 'novo lead'),
-)
-ELEMENTS = (
-    ('message', 'mensagem'),
-    ('answer', 'resposta'),
-    ('choice', 'opções'),
-    ('delay', 'atraso'),
-)
+class FlowTriggerType(Enum):
+    NOVA_MENSAGEM = 'new_message'
+    NOVO_LEAD = 'new_lead'
+
+    @classmethod
+    def as_choices(cls):
+        return [(key.value, key.name) for key in cls]
+
+
+class FlowElementType(Enum):
+    MENSAGEM = 'message'
+    RESPOSTA = 'answer'
+    ESCOLHA = 'choice'
+    ATRASO = 'delay'
+
+    @classmethod
+    def as_list(cls):
+        return [key.value for key in cls]
+
+    @classmethod
+    def as_choices(cls):
+        return [(key.value, key.name) for key in cls]
 
 
 class FlowDefinition(Base):
     name = models.CharField(verbose_name='Nome', max_length=100, unique=True)
     definition = models.JSONField(verbose_name='Definição')
     owner = models.ForeignKey(Account, verbose_name='Dono da definição', on_delete=models.CASCADE, related_name='flow_definitions')
-    trigger = models.CharField(verbose_name='Acionador', max_length=20, choices=TRIGGERS)
+    trigger = models.CharField(verbose_name='Acionador', max_length=20, choices=FlowTriggerType.as_choices())
 
     class Meta:
         verbose_name = 'Definição de Fluxo'
@@ -49,7 +62,7 @@ class FlowExecution(Base):
 
 class FlowElement(Base):
     flow_execution = models.ForeignKey(FlowExecution, verbose_name='Execução do fluxo', on_delete=models.CASCADE, related_name='flow_elements')
-    name = models.CharField(verbose_name='Nome', choices=ELEMENTS, max_length=20)
+    name = models.CharField(verbose_name='Nome', choices=FlowElementType.as_choices(), max_length=20)
     index = models.PositiveIntegerField(verbose_name='Posição', default=0)
     task_started = models.BooleanField(verbose_name='Tarefa inciada?', default=False)
     task_finished = models.BooleanField(verbose_name='Tarefa finalizada?', default=False)

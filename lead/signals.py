@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from datetime import datetime
 from lead.models import Lead, LeadStatus
 from communication.controller import Controller
+from communication.models import FlowTriggerType
 from dao.serializers import ReadOnlyModelSerializer
 
 controller = Controller()
@@ -26,7 +27,7 @@ class LeadEventSerializer(ReadOnlyModelSerializer):
 def handle_event(sender, instance, created, *args, **kwargs):
     lead = LeadEventSerializer(instance=instance).data
     event_data = {
-        'event': 'lead_created' if created else 'lead_updated',
+        'event': FlowTriggerType.NOVO_LEAD.value if created else 'lead_updated',
         'record': lead,
         'timestamp': datetime.now().isoformat()
     }
