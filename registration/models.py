@@ -34,9 +34,9 @@ class Account(User):
         verbose_name_plural = 'Contas'
         ordering = ['-created_at']
 
-    def save(self) -> None:
+    def save(self, *args, **kwargs) -> None:
         self.full_name = f'{self.first_name} {self.last_name}'
-        return super().save()
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.full_name
